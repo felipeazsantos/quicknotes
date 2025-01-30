@@ -3,10 +3,16 @@ package main
 import (
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 )
 
 func noteList(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/" {
+		http.NotFound(w, r)
+		return
+	}
+
 	files := []string{
 		"views/templates/base.html",
 		"views/templates/pages/home.html",
@@ -82,10 +88,13 @@ func noteCreate(w http.ResponseWriter, r *http.Request) {
 func main() {
 	fmt.Println("Servidor rodando na porta 5000")
 	mux := http.NewServeMux()
+
+	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("views/static"))))
+
 	mux.HandleFunc("/", noteList)
 	mux.HandleFunc("/note/view", noteView)
 	mux.HandleFunc("/note/new", noteNew)
 	mux.HandleFunc("/note/create", noteCreate)
 
-	http.ListenAndServe(":5000", mux)
+	log.Fatal(http.ListenAndServe(":5000", mux))
 }
