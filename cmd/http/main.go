@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"html/template"
 	"log"
+	"log/slog"
 	"net/http"
+	"os"
 )
 
 func noteList(w http.ResponseWriter, r *http.Request) {
@@ -88,7 +90,9 @@ func noteCreate(w http.ResponseWriter, r *http.Request) {
 func main() {
 	config := loadConfig()
 
-	fmt.Printf("Servidor rodando na porta %s\n", config.ServerPort)
+	slog.SetDefault(newLogger(os.Stdout, config.GetLevelLog()))
+
+	slog.Info(fmt.Sprintf("Servidor rodando na porta %s", config.ServerPort))
 	mux := http.NewServeMux()
 
 	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("views/static"))))
