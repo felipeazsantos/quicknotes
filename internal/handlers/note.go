@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net/http"
 	"text/template"
+
+	"github.com/felipeazsantos/quicknotes/internal/handlers/errorapp"
 )
 
 type noteHandler struct{}
@@ -39,7 +41,11 @@ func (nh *noteHandler) NoteList(w http.ResponseWriter, r *http.Request) error {
 func (nh *noteHandler) NoteView(w http.ResponseWriter, r *http.Request) error {
 	id := r.URL.Query().Get("id")
 	if id == "" {
-		return errors.New("note not found")
+		return errorapp.WithStatus(http.StatusBadRequest, "note not found")
+	}
+
+	if id == "0" {
+		return errorapp.WithStatus(http.StatusNotFound, "note not found")
 	}
 
 	files := []string{
@@ -49,12 +55,12 @@ func (nh *noteHandler) NoteView(w http.ResponseWriter, r *http.Request) error {
 
 	t, err := template.ParseFiles(files...)
 	if err != nil {
-		return fmt.Errorf("error while parsing template: %s", err.Error())
+		return errorapp.WithStatus(http.StatusInternalServerError, "error while parsing template: %s", err.Error())
 	}
 
 	err = t.ExecuteTemplate(w, "base", id)
 	if err != nil {
-		return fmt.Errorf("error while executing template: %s", err.Error())
+		return errorapp.WithStatus(http.StatusInternalServerError, "error while executing template: %s", err.Error())
 	}
 
 	return nil

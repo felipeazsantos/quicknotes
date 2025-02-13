@@ -18,7 +18,11 @@ func formatSource(source string) (string, error) {
 	baseDir := filepath.Base(workDir)
 	source = strings.ReplaceAll(source, "}", "")
 	source = strings.ReplaceAll(source, " ", ":")
-	return source[strings.Index(source, baseDir):], nil
+
+	if strings.Index(source, baseDir) > 0 {
+		return source[strings.Index(source, baseDir):], nil
+	}
+	return "", nil
 }
 
 func replaceAttr(groups []string, a slog.Attr) slog.Attr {
