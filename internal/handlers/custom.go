@@ -2,10 +2,10 @@ package handlers
 
 import (
 	"errors"
-	"html/template"
 	"net/http"
+	"text/template"
 
-	"github.com/felipeazsantos/quicknotes/internal/handlers/errorapp"
+	"github.com/felipeazsantos/quicknotes/internal/errorapp"
 )
 
 type HandlerWithError func(w http.ResponseWriter, r *http.Request) error

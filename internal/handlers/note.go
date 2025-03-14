@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"text/template"
 
-	"github.com/felipeazsantos/quicknotes/internal/handlers/errorapp"
+	"github.com/felipeazsantos/quicknotes/internal/errorapp"
 )
 
 type noteHandler struct{}
